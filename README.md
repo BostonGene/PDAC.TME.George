@@ -32,13 +32,18 @@ Clone the repository:
 git clone [repository-link]
 
 Navigate to the repository directory:
-bash
-Copy code
-cd [repository-name]
-Install required dependencies:
-bash
-Copy code
-pip install -r requirements.txt
+bash  
+Copy code  
+cd [repository-name]  
+Install required dependencies:  
+```
+python3.9 -m venv venv  
+source venv/bin/activate  
+venv/bin/python3.9 -m pip install --upgrade pip  
+pip install --no-deps -r requirements.txt  
+jupyter nbextension enable --py widgetsnbextension  
+python -m ipykernel install --user --name=pdac_tme_venv 
+``` 
 
 ## License
 []

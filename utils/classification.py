@@ -104,10 +104,10 @@ class KNeighborsClusterClassifier(object):
         :return: pd.Series, predicted cluster labels
         """
         if X.shape[1] != self.X.shape[1]:
-            raise Exception('Сolumns do not match')
+            raise Exception('Columns do not match')
 
         x_scaled = self.preprocess_data(self.check_columns(X))
-        # Here self.model.predict is used in order to mimic its' way to select the
+        # Here self.model.predict is used in order to mimic its way to select the
         #  class in case of equal probabilities
         return pd.Series(self.model.predict(x_scaled), index=x_scaled.index)
 
