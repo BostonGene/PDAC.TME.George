@@ -7,7 +7,8 @@ This repository contains the code and resources for classifying the tumor microe
 ## Overview
 PDAC presents a complex tumor environment, which has historically posed challenges in the development of reliable predictive biomarkers for targeted therapies and immunomodulation. To address this, we've implemented a classification approach based on transcriptomic profiling of the TME.
 
-Developed classification is described in [Paper's DOI link]
+Developed classification is described in [Paper's DOI link]  
+![plot](/img/abstract.png)
 
 ## Features
 This repository contains:
@@ -29,16 +30,21 @@ Python 3.x
 Required Python libraries: [List down libraries used, e.g., pandas, numpy, scikit-learn, etc.]
 ### Installation
 Clone the repository:
-git clone [repository-link]
+git clone https://github.com/BostonGene/PDAC.TME.George.git
 
 Navigate to the repository directory:
-bash
-Copy code
-cd [repository-name]
-Install required dependencies:
-bash
-Copy code
-pip install -r requirements.txt
+```
+cd PDAC.TME.George
+```
+Install required dependencies:  
+```
+python3.9 -m venv venv  
+source venv/bin/activate  
+venv/bin/python3.9 -m pip install --upgrade pip  
+pip install --no-deps -r requirements.txt  
+jupyter nbextension enable --py widgetsnbextension  
+python -m ipykernel install --user --name=pdac_tme_venv 
+``` 
 
 ## License
 []

@@ -2,6 +2,7 @@ import warnings
 
 import numpy as np
 import pandas as pd
+from statsmodels.robust.scale import mad
 
 
 class GeneSet(object):
@@ -13,7 +14,8 @@ class GeneSet(object):
 
     def __str__(self):
         return '{}\t{}\t{}'.format(self.name, self.descr, '\t'.join(self.genes))
-    
+
+
 def read_gene_sets(gmt_file):
     """
     Return dict - {geneset_name : GeneSet object}
@@ -44,9 +46,9 @@ def ssgsea_score(ranks, genes):
 
     common_genes = list(set(genes).intersection(set(ranks.index)))
     if not len(common_genes):
-        return pd.Series([0.0]*len(ranks.columns), index=ranks.columns)
+        return pd.Series([0.0] * len(ranks.columns), index=ranks.columns)
     sranks = ranks.loc[common_genes]
-    return (sranks**1.25).sum()/(sranks**0.25).sum() - (len(ranks.index) - len(common_genes) + 1) / 2
+    return (sranks ** 1.25).sum() / (sranks ** 0.25).sum() - (len(ranks.index) - len(common_genes) + 1) / 2
 
 
 def ssgsea_formula(data, gene_sets, rank_method='max'):
@@ -65,11 +67,38 @@ def ssgsea_formula(data, gene_sets, rank_method='max'):
             gs_name: ssgsea_score(ranks, gene_sets[gs_name].genes)
             for gs_name in list(gene_sets.keys())
         }
-    ).T
+    )
 
 
-def median_scale(data, clip=None):
-    c_data = (data - data.median()) / data.mad()
+def median_scale(data, clip=None, exclude=None, axis=0):
+    """
+    Scale using median and mad over any axis (over columns by default).
+    Removes the median and scales the data according to the median absolute deviation.
+
+    :param data: pd.DataFrame of pd.Series
+    :param clip: float, symmetrically clips the scaled data to the value
+    :param exclude: pd.Series, samples to exclude while calculating median and mad
+    :param axis: int, default=0, axis to be applied on: if 0, scale over columns, otherwise (if 1) scale over rows
+
+    :return: pd.DataFrame
+    """
+    from statsmodels.robust.scale import mad
+
+    if exclude is not None:
+        data_filtered = data.reindex(data.index & exclude[~exclude].index)
+    else:
+        data_filtered = data
+
+    median = 1.0 * data_filtered.median(axis=axis)
+
+    if isinstance(data, pd.Series):
+        madv = 1.0 * mad(data_filtered.dropna())
+        c_data = data.sub(median).div(madv)
+    else:
+        inv_axis = (axis + 1) % 2  # Sub and div are performed by the other axis
+        madv = 1.0 * data_filtered.apply(lambda x: mad(x.dropna()), axis=axis)
+        c_data = data.sub(median, axis=inv_axis).div(madv, axis=inv_axis)
+
     if clip is not None:
         return c_data.clip(-clip, clip)
     return c_data
@@ -89,10 +118,11 @@ def item_series(item, indexed=None):
     """
     if indexed is not None:
         if hasattr(indexed, 'index'):
-            return pd.Series([item]*len(indexed), index=indexed.index)
+            return pd.Series([item] * len(indexed), index=indexed.index)
         elif type(indexed) is int and indexed > 0:
-            return pd.Series([item]*indexed, index=np.arange(indexed))
+            return pd.Series([item] * indexed, index=np.arange(indexed))
     return pd.Series()
+
 
 def to_common_samples(df_list=()):
     """
@@ -109,9 +139,10 @@ def to_common_samples(df_list=()):
     return [df_list[i].loc[list(cs)] for i in range(len(df_list))]
 
 
-def sort_by_terms_order(data, t_order: list, vector = None):
+def sort_by_terms_order(data, t_order: list, vector=None):
     """
-    Sort "data" into blocks with values from "t_order". If "vector" is provided, sort each block by corresponding values in "vector"
+    Sort "data" into blocks with values from "t_order".
+    If "vector" is provided, sort each block by corresponding values in "vector"
     :param data: pd.Series
     :param t_order: list, values for blocks to sort "data" into
     :param vector: pd.Series, same index as data, which values to sort each block by
