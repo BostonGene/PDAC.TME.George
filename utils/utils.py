@@ -68,8 +68,34 @@ def ssgsea_formula(data, gene_sets, rank_method='max'):
     ).T
 
 
-def median_scale(data, clip=None):
-    c_data = (data - data.median()) / data.mad()
+def median_scale(data, clip=None, exclude=None, axis=0):
+    """
+    Scale using median and mad over any axis (over columns by default).
+    Removes the median and scales the data according to the median absolute deviation.
+    To calculate Median Absolute Deviation (MAD) - function "mad" from statsmodels.robust.scale is used
+    with arguments "c" equals to 1, hence no normalization is performed on MAD
+    [please see: https://www.statsmodels.org/stable/generated/statsmodels.robust.scale.mad.html]
+    :param data: pd.DataFrame of pd.Series
+    :param clip: float, symmetrically clips the scaled data to the value
+    :param exclude: pd.Series, samples to exclude while calculating median and mad
+    :param axis: int, default=0, axis to be applied on: if 0, scale over columns, otherwise (if 1) scale over rows
+    :return: pd.DataFrame, of median-scaled scores 
+    """
+    from statsmodels.robust.scale import mad
+    if exclude is not None:
+        data_filtered = data.reindex(data.index & exclude[~exclude].index)
+    else:
+        data_filtered = data
+    median = 1.0 * data_filtered.median(axis=axis)
+    if isinstance(data, pd.Series):
+        madv = 1.0 * mad(data_filtered.dropna())
+        madv = 1.0 * mad(data_filtered.dropna(), c=1)
+        c_data = data.sub(median).div(madv)
+    else:
+        inv_axis = (axis + 1) % 2  # Sub and div are performed by the other axis
+        madv = 1.0 * data_filtered.apply(lambda x: mad(x.dropna()), axis=axis)
+        madv = 1.0 * data_filtered.apply(lambda x: mad(x.dropna(), c=1), axis=axis)
+        c_data = data.sub(median, axis=inv_axis).div(madv, axis=inv_axis)
     if clip is not None:
         return c_data.clip(-clip, clip)
     return c_data
