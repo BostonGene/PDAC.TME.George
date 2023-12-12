@@ -13,7 +13,7 @@ Four TME subtypes were developed:
 * **Immune Depleted (D)**
 
 ### Publication
-Developed classification is described in details in [DOI link -- TODO]  
+Developed classification is described in details in [DOI link - TODO]  
 
 ![plot](/img/abstract.png)
 
@@ -23,15 +23,15 @@ This repository contains:
     * PDAC Meta-Cohort: annotation & calculated FGEs for all samples 
     * ICGC PACA-CA (test cohort): annotation & expressions
 + Genesets 
-    * **genesets/PAAD_genesets.gmt** -- table of all used genesets
+    * **genesets/PAAD_genesets.gmt** - table of all used genesets
 + Code
-    * **utils/** -- scripts for data preprocessing, ssGSEA score calculation, median scaling and plots
+    * **utils/** - scripts for data preprocessing, ssGSEA score calculation, median scaling and plots
     * Notebook **MFP_TME_classificataion.ipynb** with a classification of  ICGC PACA-CA samples into four TME subtypes 
     using supervised clustering
 
 ## Getting Started
 ### Prerequisites
-+ Python 3.x -- Python 3.9 is advised
++ **Python 3.x** - Python 3.9 is advised
 + Required Python libraries: please see requirements.txt
 ### Installation
 Clone the repository:
@@ -53,6 +53,6 @@ python -m ipykernel install --user --name=pdac_tme_venv
 ``` 
 
 ## License
-Licensed by BostonGene Licence -- for more info please see **LICENSE** file
-Please direct any inquiries concerning usage to askusepermission@bostongene.com.
+Licensed by BostonGene Licence -- for more info please see **LICENSE** file  
+Please direct any inquiries concerning usage to askusepermission@bostongene.com.  
 © 2023 BostonGene Corporation.
