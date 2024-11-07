@@ -1,4 +1,4 @@
-[![N|Solid](https://bostongene.com/wp-content/uploads/2022/01/bg-logo.svg)](https://bostongene.com/)
+[![N|Solid](https://bostongene.com/public/images/logo.svg)](https://bostongene.com/)
 
 # PDAC Tumor Microenvironment Classification
 This repository contains the code and resources for classifying the tumor microenvironment (TME) of pancreatic ductal adenocarcinoma (PDAC) based on functional gene signatures (FGEs) calculated on bulk RNA-Seq or microarray gene expressions data.
@@ -13,7 +13,7 @@ Four TME subtypes were developed:
 * **Immune Depleted (D)**
 
 ### Publication
-Developed classification is described in details in [DOI link - TODO]  
+Developed classification is described in details in the [manuscript](https://doi.org/10.1053/j.gastro.2024.01.028).
 
 ![plot](/img/abstract.png)
 
